@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String @unique
+  password String
+
+  baseCurrency       currency              @relation(fields: [baseCurrencyId], references: [id])
+  baseCurrencyId     String                @default("pln")
+  followedCurrencies followed_currencies[]
+}
+
+model followed_currencies {
+  user       user     @relation(fields: [userId], references: [id])
+  currency   currency @relation(fields: [currencyId], references: [id])
+  userId     Int
+  currencyId String
+
+  @@id([userId, currencyId])
+  @@unique([userId, currencyId])
+}
+
+model currency {
+  id                  String                @id
+  user                user[]
+  followed_currencies followed_currencies[]
+}

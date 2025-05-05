@@ -1,7 +1,30 @@
-import { Elysia } from "elysia";
+import {Elysia} from "elysia";
+import {swagger} from '@elysiajs/swagger'
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+import {currency} from "./routes/currency";
+import {auth} from "./routes/auth";
+import {user} from "./routes/user";
+
+const app = new Elysia()
+    .use(swagger({
+        documentation: {
+            info: {
+                title: 'Currency tracker',
+                version: '1.0.0'
+            },
+            tags: [
+                {name: 'currency', description: 'Fetching currency data'},
+                {name: 'auth', description: 'Authentication endpoints'},
+                {name: 'user', description: 'User related data'}
+            ]
+        },
+        provider: "swagger-ui"
+    }))
+    .use(auth)
+    .use(currency)
+    .use(user)
+    .listen(3000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 );
