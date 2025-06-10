@@ -14,7 +14,7 @@ const extractDateFromISO = (date: Date) => {
 export const currency = new Elysia({prefix: '/currency'})
     .model({
         exchangeRate: t.Object({
-            date: t.Date(),
+            date: t.String(),
             bid: t.Number(),
             ask: t.Number()
         }),
@@ -22,7 +22,7 @@ export const currency = new Elysia({prefix: '/currency'})
             code: t.String(),
             // TODO: find out why t.Ref('exchangeRate') is not working
             rates: t.Array(t.Object({
-                date: t.Date(),
+                date: t.String(),
                 bid: t.Number(),
                 ask: t.Number()
             }))
@@ -64,6 +64,7 @@ export const currency = new Elysia({prefix: '/currency'})
         }
 
         const response = await fetchNBP(`exchangerates/rates/c/${code.toLowerCase()}/`);
+
 
         if (response.status === 404) return error(404, {message: "Data not available"});
 

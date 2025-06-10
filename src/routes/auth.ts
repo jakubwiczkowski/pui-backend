@@ -2,6 +2,8 @@ import {Elysia, t} from 'elysia'
 
 import {db} from "../database";
 import {jwt} from "@elysiajs/jwt";
+import 'bun:dotenv';
+
 
 export const auth = new Elysia({prefix: '/auth'})
     .use(jwt({
@@ -78,7 +80,8 @@ export const auth = new Elysia({prefix: '/auth'})
                 password: await Bun.password.hash(body.password, {
                     algorithm: "bcrypt",
                     cost: 8
-                })
+                }),
+                baseCurrencyId: process.env.DEFAULT_CURRENCY_ID
             }
         })
 
@@ -87,7 +90,8 @@ export const auth = new Elysia({prefix: '/auth'})
             httpOnly: true,
             maxAge: 7 * 86400,
             path: '/',
-        })
+        });
+
     }, {
         body: 'registerData',
         detail: {
